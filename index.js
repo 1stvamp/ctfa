@@ -11,7 +11,12 @@ const parser = parse({delimiter: ','})
 const input = fs.createReadStream(process.argv[2])
 
 var transformer = transform((record, callback) => {
-  stringify([record], (err, output) => {
+  let line = [
+    date.format(date.parse(record[0], 'DD MMMM YYYY'), 'DD/MM/YYYY'),
+    -(parseFloat(record[2])),
+    record[1]
+  ]
+  stringify([line], (err, output) => {
     callback(null, output)
   })
 }, {parallel: 10})
