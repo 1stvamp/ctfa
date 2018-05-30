@@ -11,14 +11,12 @@ const parser = parse({delimiter: ','})
 const input = fs.createReadStream(process.argv[2])
 
 var transformer = transform((record, callback) => {
-  let line = [
+  let line = [[
     date.format(date.parse(record[0], 'DD MMMM YYYY'), 'DD/MM/YYYY'),
     -(parseFloat(record[2])),
     record[1].split('- Card ending')[0].trim()
-  ]
-  stringify([line], (err, output) => {
-    callback(null, output)
-  })
+  ]]
+  stringify(line, callback)
 }, {parallel: 10})
 
 const skipFirstLine = new Transform({
@@ -27,15 +25,14 @@ const skipFirstLine = new Transform({
   transform(chunk, encoding, callback) {
     let lines = chunk.toString().split('\n')
     for (let n in lines) {
-      let line = lines[n]
-      if (this.seenFirstLine) {
-        this.push(line)
+      if (n == 0) {
+        continue
       }
-      this.seenFirstLine = true
+      let line = lines[n]
+      this.push(line)
     }
     callback()
   }
 })
-skipFirstLine.seenFirstLine = false
 
 input.pipe(skipFirstLine).pipe(parser).pipe(transformer).pipe(process.stdout)
