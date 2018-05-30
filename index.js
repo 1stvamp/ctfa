@@ -14,7 +14,7 @@ var transformer = transform((record, callback) => {
   let line = [
     date.format(date.parse(record[0], 'DD MMMM YYYY'), 'DD/MM/YYYY'),
     -(parseFloat(record[2])),
-    record[1]
+    record[1].split('- Card ending')[0].trim()
   ]
   stringify([line], (err, output) => {
     callback(null, output)
