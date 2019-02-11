@@ -1,7 +1,6 @@
 'use strict'
 
 const fs = require('fs')
-const date = require('date-and-time')
 const parse = require('csv-parse')
 const stringify = require('csv-stringify')
 const transform = require('stream-transform')
@@ -12,7 +11,7 @@ const input = fs.createReadStream(process.argv[2])
 
 var transformer = transform((record, callback) => {
   let line = [[
-    date.format(date.parse(record[0], 'DD MMM YYYY'), 'DD/MM/YYYY'),
+    record[0],
     -(parseFloat(record[2])),
     record[1].split('- Card ending')[0].trim()
   ]]
